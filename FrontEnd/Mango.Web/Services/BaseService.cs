@@ -7,7 +7,7 @@ using static Mango.Web.SD;
 
 namespace Mango.Web.Services
 {
-    public class BaseService : IBaseServices
+    public class BaseService : IBaseService
     {
         private readonly IHttpClientFactory _httpClientFactory;
         public BaseService(IHttpClientFactory httpClientFactory)
