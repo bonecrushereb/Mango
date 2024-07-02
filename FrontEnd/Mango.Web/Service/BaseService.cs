@@ -1,11 +1,11 @@
 using System.Net;
 using System.Text;
 using Mango.Web.Models;
-using Mango.Web.Services.IServices;
+using Mango.Web.Service.IService;
 using Newtonsoft.Json;
 using static Mango.Web.SD;
 
-namespace Mango.Web.Services
+namespace Mango.Web.Service
 {
     public class BaseService : IBaseService
     {
@@ -13,11 +13,11 @@ namespace Mango.Web.Services
         public BaseService(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
+            
         }
-        public async Task<ResponseDto?> SendAsync(RequestDto requestDto)
+        public async Task<ResponseDto> SendAsync(RequestDto requestDto)
         {
-            try
-            {
+            try {
                 HttpClient client = _httpClientFactory.CreateClient("MangoAPI");
                 HttpRequestMessage message = new();
                 message.Headers.Add("Accept", "application/json");
@@ -29,42 +29,43 @@ namespace Mango.Web.Services
                     message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
                 }
 
-                HttpResponseMessage? apiResponse = null;
+                HttpResponseMessage apiResponse = null;
 
-                switch(requestDto.ApiType)
+                
+                switch (requestDto.ApiType)
                 {
                     case ApiType.POST:
-                        message.Method=HttpMethod.Post;
+                        message.Method = HttpMethod.Post;
                         break;
                     case ApiType.DELETE:
-                        message.Method=HttpMethod.Delete;
-                        break;                
+                        message.Method = HttpMethod.Delete;
+                        break;
                     case ApiType.PUT:
-                        message.Method=HttpMethod.Put;
-                        break;                
+                        message.Method = HttpMethod.Put;
+                        break;
                     default:
-                        message.Method=HttpMethod.Get;
+                        message.Method = HttpMethod.Get;
                         break;
                 }
 
                 apiResponse = await client.SendAsync(message);
 
-                switch (apiResponse.StatusCode)
+                switch(apiResponse.StatusCode)
                 {
                     case HttpStatusCode.NotFound:
-                        return new() { IsSuccess=false, Message = "Not Found"};
+                        return new() { IsSuccess = false, Message="Not Found" };
                     case HttpStatusCode.Forbidden:
-                        return new() { IsSuccess=false, Message = "Access Denied"};
+                        return new() { IsSuccess = false, Message="Access Denied" };
                     case HttpStatusCode.Unauthorized:
-                        return new() { IsSuccess=false, Message = "Unauthorized"};
+                        return new() { IsSuccess = false, Message="Unauthorized" };
                     case HttpStatusCode.InternalServerError:
-                        return new() { IsSuccess=false, Message = "Internal Server Error"};
+                        return new() { IsSuccess = false, Message="Internal Server Error" };
                     default:
-                        var apiContent = await apiResponse.Content.ReadAsStringAsync();
+                        var  apiContent = await apiResponse.Content.ReadAsStringAsync();
                         var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
                         return apiResponseDto;
                 }
-            }catch (Exception ex)
+            }catch(Exception ex)
             {
                 var dto = new ResponseDto
                 {
