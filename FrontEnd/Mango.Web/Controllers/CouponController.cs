@@ -1,10 +1,11 @@
 using Mango.Web.Models;
-using Mango.Web.Services.IServices;
+using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Mango.Web.Controllers
 {
+    [Route("[controller]")]
     public class CouponController : Controller
     {
         private readonly ICouponService _couponService;
@@ -14,9 +15,9 @@ namespace Mango.Web.Controllers
         }
         public async Task<IActionResult> CouponIndex()
         {
-            List<CouponDto>? list = new();
+            List<CouponDto> list = new ();
 
-            ResponseDto? response = await _couponService.GetAllCouponsAsync();
+            ResponseDto response = await _couponService.GetAllCouponsAsync();
 
             if(response != null && response.IsSuccess)
             {
@@ -24,5 +25,6 @@ namespace Mango.Web.Controllers
             }
             return View(list);
         }
+
     }
 }
