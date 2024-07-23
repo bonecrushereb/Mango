@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Mango.Web.Views.Coupon
+namespace Mango.Web.Views.Auth
 {
-    public class CouponDelete : PageModel
+    public class Register : PageModel
     {
-        private readonly ILogger<CouponDelete> _logger;
+        private readonly ILogger<Register> _logger;
 
-        public CouponDelete(ILogger<CouponDelete> logger)
+        public Register(ILogger<Register> logger)
         {
             _logger = logger;
         }
